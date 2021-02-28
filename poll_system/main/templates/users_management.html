@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if users_list %}
+        <div class="p-3 bg-white border rounded my-5">
+            <p>Общее количество пользователей участвовавших в опросах: <span class="text-primary">{{ all_users_count.users_count }}</span></p>
+            <p>Сумма баллов всех участвовавших пользователей: 
+                {% if all_users_count.total_score %}
+                    <span class="text-primary">{{ all_users_count.total_score }}</span>
+                {% else %}
+                    <span class="text-primary">0</span>
+                {% endif %}
+            </p>
+            <p>Общее количество опросов <span class="text-primary">{{ all_polls_count }}</span> из них пройдено всеми пользователями <span class="text-primary">{{ all_users_count.total_polls }}</span></p>
+            <p>Общее количество вопросов в системе <span class="text-primary">{{ all_questions_count }}</span> из них пройдено пользователями <span class="text-primary">{{ all_users_count.total_questions }}</span></p>
+        </div>
+        <ul class="list-group pt-3">
+            {% for user_item in users_list %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-secondary lead">
+                        {% if user_item.first_name %} 
+                            ({{ user_item.username|capfirst }}) {{ user_item.first_name|capfirst }} {{ user_item.last_name|capfirst }}
+                        {% else %} 
+                            {{ user_item.username|capfirst }} 
+                        {% endif %}
+                    </span>
+                    <div class="d-flex">
+                        <a class="btn btn-secondary mx-3" href="{% url 'main:hr_statistic' user_item.id %}">Статистика</a>
+                        <a class="btn btn-primary" href="{% url 'main:user_update' user_item.id %}">Изменить</a>
+                        <a class="btn btn-danger mx-3" href="{% url 'main:user_delete' user_item.id %}">Удалить</a>
+                        <form method="post">
+                            {% csrf_token %}
+                            {% if user_item.is_HR %}
+                                <input type="hidden" name="user_id" value="{{ user_item.id }}"/>
+                                <input type="hidden" name="action" value="unset_hr"/>
+                                <input class="btn btn-outline-warning active" type="submit" value="HR-полномочия"/>
+                            {% else %}
+                                <input type="hidden" name="user_id" value="{{ user_item.id }}"/>
+                                <input type="hidden" name="action" value="set_hr"/>
+                                <input class="btn btn-outline-warning" type="submit" value="HR-полномочия"/>
+                            {% endif %}
+                        </form>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Перечень пуст. В системе не зарегистрированы пользователи.</p>
+    {% endif %}
+    <a class="btn btn-primary my-5" href="{% url 'main:user_create' %}">Добавить пользователя</a>
+{% endblock %}

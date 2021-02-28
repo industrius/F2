@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h3 class="mb-5">Авторизация пользователя</h3>
+    <form method="post">  
+        {% csrf_token %}  
+        {{ form|crispy }}  
+        <input class="btn btn-primary my-4" type="submit" value="Войти">
+        <a href="{% url 'main:index' %}" class="btn btn-secondary my-4">Отмена</a>
+    </form>  
+{% endblock %}

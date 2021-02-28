@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <p class="lead text-uppercase text-primary my-5">{{ poll.title }}</p>
+    <p class="mb-2 lead">Описание:</p>
+    <p class="text-secondary">{{ poll.description }}</p>
+    <p class="lead my-3">Ограничение времени: <span class="text-primary">{{ poll.timer }} сек.</span></p>
+
+    <div class="my-5 d-flex justify-content-between">
+        <div>
+            <a href="{% url 'main:poll_update' poll.id %}" class="btn btn-primary">Изменить опрос</a>
+            <a href="{% url 'main:poll_delete' poll.id %}" class="btn btn-danger">Удалить</a>
+            <a href="{% url 'main:poll_list' %}" class="btn btn-secondary">Назад</a>
+        </div>
+        <a class="btn btn-primary" href="{% url 'main:question_choice_list' poll.id 0 %}">Выбрать вопросы</a>
+    </div>
+
+
+
+    {% if questions %}
+        <p class="my-2 lead">Выбранные вопросы:</p>
+            
+        <ul class="list-group">
+            {% for question in questions %}
+                <div class="list-group-item">
+                    {{ question.question.text }}
+                    <div class="mt-2 d-flex justify-content-between">
+                        <p class="text-primary m-0">Баллы за вопрос: <span class="text-secondary">
+                            {{ question.score }}
+                        </span></p>
+                        <div class="text-primary mt-2">
+                            {% if question.question.many_answers %}
+                                Несколько ответов
+                            {% else %}
+                                Один ответ
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </ul>
+    {% endif %}
+ {% endblock %}

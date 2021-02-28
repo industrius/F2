@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <form action='' method="post">
+        {% csrf_token %}
+        <div class="my-3">
+            {{ form.title|as_crispy_field }}
+        </div>
+        <div class="my-3">
+            {{ form.description|as_crispy_field }}
+        </div>
+        <div class="my-3">
+            {{ form.timer|as_crispy_field }}
+        </div>
+        <div class="my-3">
+            {{ form.pub_date|as_crispy_field }}
+        </div>
+        <div class="my-5">
+            <input class="btn btn-primary my-4" type="submit" value="{{ button }}">
+            <a href="{% url 'main:poll_list' %}" class="btn btn-secondary my-4">Отмена</a>
+        </div>
+    </form>
+{% endblock %}

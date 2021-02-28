@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="p-0 py-4 px-3 bg-white border rounded">
+        <p>Количество пройденых опросов: <span class="text-primary">{{ passed_polls_count }}</span></p>
+        <p>Общее количество вопросов, на которые ответил: <span class="text-primary">{{ passed_questions_count }}</span></p>
+        <p>Минимальный балл за ответ на вопрос: 
+            {% if score.min_score %}
+                <span class="text-primary">{{ score.min_score }}</span>
+            {% else %}
+                <span class="text-primary">0</span>
+            {% endif %}
+        </p>
+        <p>Максимальный балл за ответ на вопрос: 
+            {% if score.max_score %}
+                <span class="text-primary">{{ score.max_score }}</span>
+            {% else %}
+                <span class="text-primary">0</span>
+            {% endif %}
+        </p>
+        <p>Общее количество баллов за ответы: 
+            {% if score.total_score %}
+                <span class="text-primary">{{ score.total_score }}</span>
+            {% else %}
+                <span class="text-primary">0</span>
+            {% endif %}
+        </p>
+        <p class="p-0 pb-2 m-0"><span class="text-primary">{{ result }}%</span> пользователей набрали больше баллов за ответы</p>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center my-5">
+        {% if user_answers %}
+            <h3>{{ answers_title }}</h3>
+        {% else %}
+            <p></p>
+        {% endif %}
+        {% if user.is_HR or user.is_superuser %}
+            <a class="btn btn-primary" href="{% url 'main:users_management' %}">Назад</a>
+        {% endif %}
+    </div>
+
+    {% for poll, questions in user_answers.items %}
+        <h5 class="text-primary mt-5">{{ poll }}</h5>
+        <div class="p-3 bg-white border rounded mb-5">
+        {% for question, answers in questions.items %}
+            <p class="text-justify mt-4">{{ question }}</p>
+            <div class="m-2">
+            {% for answer in answers %}
+                <p class="text-primary">{{ answer }}</p>
+            {% endfor %}
+            </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
+
+{% endblock %}

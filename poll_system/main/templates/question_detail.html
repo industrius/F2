@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="row my-5">
+        {% if question.picture %}
+        <div class="col-2">
+            <img src="{{ question.picture.url }}" width="200"/>
+        </div>
+        {% endif %}
+        <div class="col d-flex align-items-center {% if question.picture %}px-5{% endif %}">
+            <p class="lead text-primary">{{ question.text }}</p>
+        </div>
+    </div>
+
+    <p class="lead">Ответы на вопрос:</p>
+
+    <ul class="list-group">
+        {% for answer in answers %}
+            <li class="list-group-item">{{ answer }}</li>
+        {% endfor %}
+    </ul>
+
+    <div class="my-3">
+        {% if question.many_answers %}
+            <p class="my-3 lead">Для решения необходимо выбрать: <span class="text-primary">несколько ответов </span></p>
+        {% else %}
+            <p class="my-3 lead">Для решения необходимо выбрать: <span class="text-primary">один ответ </span></p>
+        {% endif %}
+        <p class="my-3 lead">Ограничение времени на ответ: <span class="text-primary">{{ question.timer }} сек.</span></p>
+    </div>
+    <div class="my-5">
+        <a href="{% url 'main:question_update' question.id %}" class="btn btn-primary">Изменить</a>
+        <a href="{% url 'main:question_delete' question.id %}" class="btn btn-danger">Удалить</a>
+        <a href="{% url 'main:question_list' %}" class="btn btn-secondary my-4">Назад</a>
+    </div>
+{% endblock %}

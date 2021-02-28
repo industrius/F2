@@ -1,0 +1,40 @@
+version: '3.3'
+services:
+
+  nginx:
+    build: ./nginx
+    container_name: F_nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./poll_system/staticfiles:/staticfiles
+      - ./poll_system/media:/media
+    depends_on:
+      - web
+
+  web:
+    build: ./poll_system
+    container_name: F_web
+    command: bash -c "python manage.py makemigrations --no-input && python manage.py migrate --no-input && python manage.py collectstatic --no-input && gunicorn poll_system.wsgi:application --bind 0.0.0.0:8000"
+    ports:
+      - 8000
+    volumes:
+      - ./poll_system:/data
+    depends_on:
+      - data_db
+    environment:
+      - DATABASE_URL=postgres://postgres:password@data_db/poll_system
+      - SECRET_KEY='o+vtn=b5_wo15!--nthg*1lx61c6ic1r0j)g8e!q(%2%4gu)2-'
+      - DEBUG=0
+
+  data_db:
+    image: postgres
+    container_name: F_postgres
+    ports:
+      - 5434:5432
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=poll_system

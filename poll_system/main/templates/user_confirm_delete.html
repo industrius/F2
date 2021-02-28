@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action='' method="post">
+        {% csrf_token %}
+        <p class="lead">
+            {% if django_user.first_name %} 
+                {{ django_user.first_name|capfirst }} {{ django_user.last_name|capfirst }} 
+            {% else %} 
+                {{ django_user.username|capfirst }} 
+            {% endif %}
+        </p>
+        <input class="btn btn-danger my-4" type="submit" value="{{ button }}">
+        <a href="{% url 'main:users_management' %}" class="btn btn-secondary my-4">Отмена</a>
+    </form>
+{% endblock %}

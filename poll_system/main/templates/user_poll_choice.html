@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if polls_list %}
+        <ul class="list-group">
+            {% for poll in polls_list %}
+                <a class="list-group-item list-group-item-action text-secondary" href="{% url 'main:user_survey' poll.id %}">
+                    <p class="lead text-uppercase text-primary text-break">{{ poll }}</p>
+                    <p class="lead mb-0">Описание:</p>
+                    <p class="text-secondary">{{ poll.description }}</p>
+                    <div class="mt-2 d-flex justify-content-between">
+                        <p class="lead">Ограничение времени: 
+                            {% if poll.timer %}
+                                <span class="text-primary">{{ poll.timer }} секунд</span>
+                            {% else %}
+                                <span class="text-primary">без ограничения</span>
+                            {% endif %}
+                        </p>
+                        <p class="lead">Количество вопросов: <span class="text-primary">{{ poll.question_count }}</span> из них пройдено: <span class="text-primary">{{ poll.question_answered }}</span></p>
+                    </div>
+                </a>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Перечень опросов пуст. В систему не добавлено ни одного опроса.</p>
+        <a class="btn btn-primary my-5" href="{% url 'main:index' %}">Назад</a>
+    {% endif %}
+{% endblock %}

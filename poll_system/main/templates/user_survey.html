@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for page_object in page.object_list %}
+        <div class="row my-5">
+            {% if page_object.question.picture %}
+            <div class="col-2">
+                <img src="{{ page_object.question.picture.url }}" width="200"/>
+            </div>
+            {% endif %}
+            <div class="col d-flex align-items-center {% if page_object.question.picture %}px-5{% endif %}">
+                <p class="lead text-primary">{{ page_object.question }}</p>
+            </div>
+        </div>
+
+        <p class="lead">Ответы на вопрос:</p>
+        <form action='' method="post">
+            {% csrf_token %}
+            <ul class="list-group">
+                {% for answer in page_object.question.answers.all %}
+                    <li class="list-group-item">
+                        <div class="form-check">
+                            <input class="form-check-input" type="{% if page_object.question.many_answers %}checkbox{% else %}radio{% endif %}" value="{{ answer.id }}" id="{{ answer.id }}" name="answer" {% if answer.id in previous_user_answers %}checked{% endif %}>
+                            <label class="form-check-label text-secondary" for="{{ answer.id }}">{{ answer }}</label>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            <input type="hidden" name="question_id" value="{{ page_object.id }}"/>
+            <input type="hidden" name="current_paginator_page" value="{{ page.number }}"/>
+            <input type="hidden" name="next_paginator_page" value="{% if page.has_next %}{{ page.next_page_number }}{% endif %}"/>
+            <div class="d-flex justify-content-between my-5">
+                <button class="btn btn-primary" type="submit">Сохранить ответ</button>
+                <a href="{% url 'main:user_poll_chioce' %}" class="btn btn-secondary">Отмена опроса</a>
+            </div>
+        </form>
+    {% endfor %}
+{% endblock %}

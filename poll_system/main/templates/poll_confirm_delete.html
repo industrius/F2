@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <form action='' method="post">
+        {% csrf_token %}
+        <p>{{ poll.title }}</p>
+        <input class="btn btn-danger my-4" type="submit" value="{{ button }}">
+        <a href="{% url 'main:poll_list' %}" class="btn btn-secondary my-4">Отмена</a>
+    </form>
+{% endblock %}

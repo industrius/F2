@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block content %}
+
+    {% if polls %}    
+        <div class="btn-group mt-3" role="group">
+            <button id="btnGroupDrop1" type="button" class="btn btn-outline-primary dropdown-toggle text-break" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="lead">
+                    {% if poll_title %}
+                        {{ poll_title }}
+                    {% else %}
+                        Выберите опрос
+                    {% endif %}
+                </span>
+            </button>
+
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                {% for poll in polls %}
+                    <li><a class="dropdown-item" href="{% url 'main:question_choice_list' poll.id question_category %}">{{ poll }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <form action='' method="post">
+            {% csrf_token %}
+
+            {% if poll_title %}
+                {% if selected_questions %}
+                    <p class="mt-5 mb-2 lead">Вопросы в этом опросе:</p>
+
+                    <ul class="list-group">
+                        {% for question in selected_questions %}
+                            <li class="list-group-item list-group-item-action">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{ question.id }}" id="sel{{ question.id }}" name="question_remaind" checked>
+                                    <label class="form-check-label text-secondary" for="sel{{ question.id }}">{{ question.question.text }}</label>
+                                    <div class="mt-2 d-flex justify-content-between">
+                                        <p class="text-primary m-0">Баллы за вопрос: <span class="text-secondary">
+                                            {{ question.score }}
+                                        </span></p>
+                                        <div class="text-primary mt-2">
+                                            {% if question.question.many_answers %}
+                                                Несколько ответов
+                                            {% else %}
+                                                Один ответ
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                {% else %}
+                    <p class="mt-5 mb-2 lead">Не добавлены вопросы в этот опрос!</p>
+                {% endif %}
+
+                <div class="my-5 d-flex justify-content-between">
+                    <div class="">
+                        <input class="btn btn-primary" type="submit" value="{{ button }}">
+                        <a href="{% url 'main:poll_list' %}" class="btn btn-secondary">Назад</a>
+                    </div>
+
+                    {% if poll_title %}
+                        <div class="btn-group" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="">
+                                {% if question_category == 1 %}
+                                    Один ответ
+                                {% elif question_category == 2 %}
+                                    Несколько ответов
+                                {% else %}
+                                    Все вопросы
+                                {% endif %}
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <li><a class="dropdown-item" href="{% url 'main:question_choice_list' poll_id 0 %}">Все вопросы</a></li>
+                                <li><a class="dropdown-item" href="{% url 'main:question_choice_list' poll_id 1 %}">Один ответ</a></li>
+                                <li><a class="dropdown-item" href="{% url 'main:question_choice_list' poll_id 2 %}">Несколько ответов</a></li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                {% if vacant_questions %}
+                    <p class="mb-2 lead">Добавить вопросы:</p>
+
+                    <div style="overflow:auto;height:44em;" class="mb-5">
+                        <ul class="list-group">
+                            {% for question in vacant_questions %}
+                                <li class="list-group-item list-group-item-action">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="{{ question.id }}" id="vac{{ question.id }}" name="question_append">
+                                        <label class="form-check-label" for="vac{{ question.id }}">{{ question }}</label>
+
+                                        <div class="d-flex justify-content-between">
+                                            <div class="d-flex mt-2">
+                                                <label class="text-primary" for="score{{ question.id }}">Баллы за вопрос: </label>
+                                                <input type="hidden" name="question_id" value="{{ question.id }}">
+                                                <input class="text-secondary" type="text" name="question_score" id="score{{ question.id }}" value="10">
+                                                {% if question.in_polls %}
+                                                    <div class="text-primary mx-5">
+                                                        Уже включен в другие опросы
+                                                    </div>
+                                                {% else %}
+                                                    <div class="text-warning mx-5">
+                                                        Не участвует в опросах
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="text-primary mt-2">
+                                                {% if question.many_answers %}
+                                                    Несколько ответов
+                                                {% else %}
+                                                    Один ответ
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                {% else %}
+                    <p class="mt-4 mb-2 lead">Нет вопросов для добавления в опрос!</p>
+                {% endif %}
+            {% endif %}
+        </form>
+
+    {% else %}
+        <p>Перечень опросов пуст. В систему не добавлено ни одного опроса.</p>
+        <a class="btn btn-primary my-5" href="{% url 'main:poll_create' %}">Добавить первый опрос</a>
+    {% endif %}
+
+{% endblock %}

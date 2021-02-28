@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="{% static '/css/bootstrap.min.css'%}">
+    <title>{{ title }}</title>
+</head>
+<body class="text-secondary bg-light">
+    <div class="container">
+
+        <div class="bg-primary d-flex justify-content-between rounded">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link text-light" aria-current="page" href="{% url 'main:index' %}"> <span class="text-warning">#</span> Система опросов</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" aria-current="page" href="{% url 'main:user_poll_chioce' %}">Пройти опрос</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" aria-current="page" href="{% url 'main:user_statistic' %}">Ваша статистика</a>
+                </li>
+            </ul>
+
+            <ul class="nav nav-pills">
+            
+                {% if user.is_HR or user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link text-warning" href="{% url 'main:users_management' %}">Пользователи</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-warning" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Опросы & Вопросы</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'main:poll_list' %}">Список опросов</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:poll_create' %}">Добавить опрос</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'main:question_list' %}">Список вопросов</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:question_create' %}">Добавить вопрос</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'main:question_choice_list' 0 0 %}">Управление опросами</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+            
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-light" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                        {% if user.is_authenticated %}
+                            {% if user.is_HR or user.is_superuser %}
+                                <span class="text-dark rounded p-1 bg-warning">HR</span>
+                            {% endif %}
+                            &nbsp;&nbsp;
+                            {% if user.first_name %}
+                                {{ user.first_name|capfirst }} {{ user.last_name|capfirst }}
+                            {% else %}
+                                {{ user.username|capfirst }}
+                            {% endif %}
+                        {% else %}
+                            Авторизация
+                        {% endif %}
+                    </a>
+                    
+                    <ul class="dropdown-menu">
+                        {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'main:logout' %}">Выход</a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="{% url 'main:login' %}">Авторизация</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:user_create' %}">Регистрация</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+
+        <h2 class="my-5">{{ title }}</h2>
+        
+        {% block content %}
+        {% endblock %}
+    </div>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

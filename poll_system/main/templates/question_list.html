@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if object_list %}
+        <a class="btn btn-primary my-3" href="{% url 'main:question_create' %}">Добавить вопрос</a>
+        <div style="height:60em;" class="overflow-auto">
+            <ul class="list-group">
+                {% for object in object_list %}
+                    <a class="list-group-item list-group-item-action text-secondary" href="{% url 'main:question_detail' object.id %}">{{ object }}</a>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <p>Перечень пуст. В систему не добавлено ни одного вопроса.</p>
+        <a class="btn btn-primary my-5" href="{% url 'main:question_create' %}">Добавить первый вопрос</a>
+    {% endif %}
+{% endblock %}

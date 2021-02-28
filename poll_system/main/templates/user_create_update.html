@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <form method="post">  
+        {% csrf_token %}  
+        {{ form|crispy }}  
+        <input class="btn btn-primary my-5" type="submit" value="{{ button }}">
+        <a href="{% url 'main:users_management' %}" class="btn btn-secondary my-4">Отмена</a>
+    </form>  
+{% endblock %}
